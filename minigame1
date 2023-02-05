@@ -1,0 +1,232 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class GameUI {
+    public static void main(String[] args) throws IOException {
+        int currentRoom = 1; //Initial Room
+        boolean gameover = false;
+
+        //Exits for each rooms
+        Exit exit1 = new Exit("East",2);
+        Exit exit2a = new Exit("West",1);
+        Exit exit2b = new Exit("East",3);
+        Exit exit2c = new Exit("North",4);
+        Exit exit3a = new Exit("West",2);
+        Exit exit3b = new Exit("North",5);
+        Exit exit4a = new Exit("South",2);
+        Exit exit4b = new Exit("East",5);
+        Exit exit5a = new Exit("East",6);
+        Exit exit5b = new Exit("North",7);
+        Exit exit6 = new Exit("West",5);
+        Exit exit7 = new Exit("South",5);
+        ArrayList<Exit> exits1 = new ArrayList<>();
+        exits1.add(exit1);
+
+        ArrayList<Exit> exits2 = new ArrayList<>();
+        exits2.add(exit2a);
+        exits2.add(exit2b);
+        exits2.add(exit2c);
+
+        ArrayList<Exit> exits3 = new ArrayList<>();
+        exits3.add(exit3a);
+        exits3.add(exit3b);
+
+        ArrayList<Exit> exits4 = new ArrayList<>();
+        exits4.add(exit4a);
+        exits4.add(exit4b);
+
+        ArrayList<Exit> exits5 = new ArrayList<>();
+        exits5.add(exit5a);
+        exits5.add(exit5b);
+
+        ArrayList<Exit> exits6 = new ArrayList<>();
+        exits6.add(exit6);
+
+        ArrayList<Exit> exits7 = new ArrayList<>();
+        exits7.add(exit7);
+
+        //Room info
+        Room room1 = new Room(1,"Beginning","You are standing at the end of a road before a dark and dank cave. The forest is covering the\n" +
+                "road lending a dark and spooky aspect to the road.\n" +
+                "You hear a low wailing that seems to be coming from the cave.\n" +
+                "You can go EAST from here.",false,exits1);
+        Room room2 = new Room(2,"Entrance","You have entered a dark, low cave that seems to lead to a slightly larger cavern to the east.\n" +
+                "Strangely you see a faint glow coming from the west.\n" +
+                "You can go WEST,EAST or NORTH from here.",false,exits2);
+        Room room3 = new Room(3,"Cavern","You enter a large cavern. You are surprised to find that the walls of the cave are glowing so you\n" +
+                "have no problem seeing the large stalactites that have formed.\n" +
+                "To the north you hear the sound of rushing water.\n" +
+                "You can go WEST or NORTH from here.",false,exits3);
+        Room room4 = new Room(4,"Spooky Cave","You have entered a dark twisting, tunnel that seems to wind around the Cavern. The low wailing\n" +
+                "you heard before has risen to a screech that is making your hair stand on end.\n" +
+                "You see a sign that says \"Proceed at your own risk. Anyone entering this area will be eaten.\"\n" +
+                "You can go SOUTH or EAST from here.",false,exits4);
+        Room room5 = new Room(5,"Rushing River","You have entered a wet, slippery cave. You are standing on a narrow ledge. As you slip toward\n" +
+                "the rushing river, you think, \"I shouldn't be here.\"\n" +
+                "You can go EAST or NORTH from here.",false,exits5);
+        Room room6 = new Room(6,"Dead End","As you enter this dark and forbidding cavern you hear the roar of some enormous monster.\n" +
+                "You decide that leaving this place would be a great idea.\n" +
+                "You can go WEST from here.",false,exits6);
+        Room room7 = new Room(7,"Finish","Congratulations!!! You have completed the journey through my maze.\n" +
+                "You can go SOUTH from here.",false,exits7);
+
+        ArrayList<Room> rooms = new ArrayList<>();
+        rooms.add(room1);
+        rooms.add(room2);
+        rooms.add(room3);
+        rooms.add(room4);
+        rooms.add(room5);
+        rooms.add(room6);
+        rooms.add(room7);
+
+        //Read text file and output
+        Scanner input = new Scanner(System.in);
+        try {
+            File file = new File("src/Rooms.txt");
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                System.out.println(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        System.out.println("Welcome to my adventure game. You will proceed through rooms based upon your entries.\n" +
+                "You can navigate by using the entire direction or just the first letter.\n" +
+                "You can view a room using the 'Look' command and view exits using the 'exit' command.\n" +
+                "Try and enter the 'Look' command to view the first room.\n" +
+                "To exit(X) the game, enter X");
+
+        while (!gameover){
+            String userInput = input.next();
+
+            if (userInput.equalsIgnoreCase("look")) {
+                printCurrentRoom(currentRoom,rooms);
+                System.out.println("What would you like to do?");
+                continue;
+            } else if (userInput.equalsIgnoreCase("x")) {
+                System.out.println("Thank you for playing!");
+                gameover = true;
+                break;
+            } else if (userInput.equalsIgnoreCase("exits")){
+                printEnd(currentRoom,rooms);
+                continue;
+            }
+            switch (currentRoom) {
+                case 1:
+                    if (userInput.equalsIgnoreCase("east") || userInput.equalsIgnoreCase("e")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        System.out.println("Enter command:");
+                        currentRoom = 2;
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+                    break;
+                case 2:
+                    if (userInput.equalsIgnoreCase("north") || userInput.equalsIgnoreCase("n")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 4;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("east") || userInput.equalsIgnoreCase("e")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 3;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("west") || userInput.equalsIgnoreCase("w")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 1;
+                        System.out.println("Enter command:");
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+
+                    break;
+                case 3:
+                    if (userInput.equalsIgnoreCase("north")||userInput.equalsIgnoreCase("n")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 5;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("west")||userInput.equalsIgnoreCase("w")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 2;
+                        System.out.println("Enter command:");
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+                    break;
+                case 4:
+                    if (userInput.equalsIgnoreCase("east")||userInput.equalsIgnoreCase("e")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 5;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("south")||userInput.equalsIgnoreCase("s")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 2;
+                        System.out.println("Enter command:");
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+                    break;
+                case 5:
+                    if (userInput.equalsIgnoreCase("east")||userInput.equalsIgnoreCase("e")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 6;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("north")||userInput.equalsIgnoreCase("n")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 7;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("south")||userInput.equalsIgnoreCase("s")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 3;
+                        System.out.println("Enter command:");
+                    } else if (userInput.equalsIgnoreCase("west")||userInput.equalsIgnoreCase("w")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 4;
+                        System.out.println("Enter command:");
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+                    break;
+                case 6:
+                    if (userInput.equalsIgnoreCase("west") || userInput.equalsIgnoreCase("w")) {
+                        rooms.get(currentRoom - 1).setVisited(true);
+                        currentRoom = 5;
+                        System.out.println("Enter command:");
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+                    break;
+                case 7:
+                    if (userInput.equalsIgnoreCase("south")||userInput.equalsIgnoreCase("s")) {
+                        rooms.get(currentRoom-1).setVisited(true);
+                        currentRoom = 5;
+                        System.out.println("Enter command:");
+                    } else {
+                        System.out.println("Invalid command. Please re-enter: ");
+                    }
+                    break;
+            }
+        }
+    }
+
+        //Prints out current room's description
+        public static void printCurrentRoom (int currentRoom, ArrayList < Room > rooms){
+            System.out.print((rooms.get(currentRoom-1).getRoomName()) + " ");
+            if (!rooms.get(currentRoom - 1).isVisited()) {
+                System.out.println("Not visited");
+            } else {
+                System.out.println("Visited");
+            }
+            System.out.println((rooms.get(currentRoom-1).getRoomDescription()));
+        }
+        //Prints out current room's exits
+        public static void printEnd ( int currentRoom, ArrayList<Room > rooms){
+            System.out.println((rooms.get(currentRoom-1).getExits()));
+        }
+    }
